@@ -1,0 +1,30 @@
+.TH "OUI" "1" "August 2015" "" ""
+.
+.SH "NAME"
+\fBoui\fR \- lookup MAC address prefixes
+.
+.SH "SYNOPSIS"
+\fBoui\fR [\fB\-D\fR] \fIADDRESS\fR
+.
+.SH "DESCRIPTION"
+The \fBoui\fR utility provides an easy way to lookup OUIs and other
+MAC address prefixes using the official IEEE OUI database\.
+.P
+The \fIADDRESS\fR must be at least three octets and either colon-delimited,
+dash\-delimited, or period\-delimited. It attempts to expand one\-byte sequences
+into two\-byte sequences so that, for instance, b5:d:d1 becomes b5:0d:d1\.
+.P
+When you first run \fBoui\fR, it will try to download the IEEE OUI database,
+which requires Internet connectivity and can take quite a while. However, once
+the database is downloaded, \fBoui\fR will run quickly and without Internet\.
+.
+.SH "OPTIONS"
+.TP
+.BR \-D
+Force \fBoui\fR to redownload the IEEE database.
+.
+.SH "BUGS"
+\fBoui\fR does not support reverse lookups by manufacturer name.
+.
+.SH "SEE ALSO"
+ifconfig(1), arp(1)

@@ -1,0 +1,36 @@
+OUI(1)                                                                  OUI(1)
+
+
+
+NAME
+       oui − lookup MAC address prefixes
+
+SYNOPSIS
+       oui [−D] ADDRESS
+
+DESCRIPTION
+       The  oui  utility  provides  an  easy  way to lookup OUIs and other MAC
+       address prefixes using the official IEEE OUI database.
+
+       The ADDRESS must be at least three octets and  either  colon‐delimited,
+       dash−delimited,  or  period−delimited.  It  attempts to expand one−byte
+       sequences into  two−byte  sequences  so  that,  for  instance,  b5:d:d1
+       becomes b5:0d:d1.
+
+       When  you first run oui, it will try to download the IEEE OUI database,
+       which requires Internet connectivity and can take quite a  while.  How‐
+       ever, once the database is downloaded, oui will run quickly and without
+       Internet.
+
+OPTIONS
+       −D     Force oui to redownload the IEEE database.
+
+BUGS
+       oui does not support reverse lookups by manufacturer name.
+
+SEE ALSO
+       ifconfig(1), arp(1)
+
+
+
+                                  August 2015                           OUI(1)

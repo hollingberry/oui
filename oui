@@ -1,0 +1,61 @@
+#!/bin/bash
+
+url="http://standards-oui.ieee.org/oui.txt"
+file="$HOME/.config/oui/oui.txt"
+
+# Print an error message to stderr and exit with 1.
+error() {
+  echo "oui: $*" >&2
+  exit 1
+}
+
+# Print a usage message to stdout and exit with 2.
+usage() {
+  echo "Usage: oui ADDRESS"
+  exit 2
+}
+
+# Download the IEEE database. We use a temporary file so that the original
+# database isn't lost if somebody interrupts the download.
+download() {
+  tmpfile=$(mktemp)
+  curl --progress-bar $url | grep '(hex)' > $tmpfile || error "download failed"
+  mkdir -p $(dirname $file)
+  mv $tmpfile $file
+}
+
+# Formats a MAC address into the canonical AA-BB-CC form.
+normalize() {
+  echo $1 |
+  xargs | # Strip leading and trailing whitespace
+  tr '-' ':' |
+  # tr '.' ':' |
+  sed 's/^\([[:xdigit:]]\):/0\1:/' |
+  sed 's/:\([[:xdigit:]]\)$/:0\1/' |
+  sed 's/:\([[:xdigit:]]\):/:0\1:/' |
+  tr '[[:lower:]]' '[[:upper:]]' |
+  grep -o '^[[:xdigit:]][[:xdigit:]]:[[:xdigit:]][[:xdigit:]]:[[:xdigit:]][[:xdigit:]]' |
+  tr ':' '-'
+}
+
+while getopts :D opt
+do
+  case $opt in
+     D) download=true;;
+    \?) error "invalid option -$OPTARG";;
+     :) error "option -$OPTARG requires an argument";;
+  esac
+  shift
+done
+
+if [ ! -f "$file" ] || [ "$download" = "true" ]; then download; fi
+if [ "$#" -ne 1 ]; then usage; fi
+
+addr=$(normalize $1)
+
+grep "$addr" $file |
+awk '{
+  printf("%s  ", $1);
+  $1=""; $2="";
+  printf("%s\n", $0);
+}'
